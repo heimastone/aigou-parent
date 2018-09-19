@@ -3,14 +3,14 @@ app.controller('goodsController', function ($scope, $controller, uploadService, 
 
     $controller('baseController', {$scope: $scope});//继承
 
-    //读取列表数据绑定到表单中  
+    //读取列表数据绑定到表单中
     $scope.findAll = function () {
         goodsService.findAll().success(
             function (response) {
                 $scope.list = response;
             }
         );
-    }
+    };
 
     //分页
     $scope.findPage = function (page, rows) {
@@ -20,7 +20,7 @@ app.controller('goodsController', function ($scope, $controller, uploadService, 
                 $scope.paginationConf.totalItems = response.total;//更新总记录数
             }
         );
-    }
+    };
 
     //查询实体
     $scope.findOne = function (id) {
@@ -29,7 +29,7 @@ app.controller('goodsController', function ($scope, $controller, uploadService, 
                 $scope.entity = response;
             }
         );
-    }
+    };
 
     //保存
     $scope.add = function () {
@@ -48,7 +48,7 @@ app.controller('goodsController', function ($scope, $controller, uploadService, 
                 }
             }
         );
-    }
+    };
 
 
     //批量删除
@@ -62,7 +62,7 @@ app.controller('goodsController', function ($scope, $controller, uploadService, 
                 }
             }
         );
-    }
+    };
 
     $scope.searchEntity = {};//定义搜索对象
 
@@ -74,30 +74,33 @@ app.controller('goodsController', function ($scope, $controller, uploadService, 
                 $scope.paginationConf.totalItems = response.total;//更新总记录数
             }
         );
-    }
-
-
-    $scope.uploadFile = function () {
-        uploadService.uploadFile().success(function (response) {
-            if (response.success) {/*如果上传成功，取出 url */
-                $scope.image_entity.url = response.message;/*设置文件地址 */
-            }else {
-                alert(response.message)
-
-            }
-
-        });
-
     };
-    $scope.entity={goods:{},goodsDesc:{itemImages:[]}};//定义页面实体结构
+
+
+    /**
+     * 上传图片
+     */
+    $scope.uploadFile = function () {
+
+        uploadService.uploadFile().success(function (response) {
+            if (response.success) {//如果上传成功，取出 url
+                $scope.image_entity.url = response.message;//设置文件地址
+            } else {
+                alert(response.message);
+            }
+        })
+    };
+
+    $scope.entity = {goods: {}, goodsDesc: {itemImages: []}};//定义页面实体结构
+
     //添加图片列表
-    $scope.add_image_entity=function(){
+    $scope.add_image_entity = function () {
 
         $scope.entity.goodsDesc.itemImages.push($scope.image_entity);
-    }
+    };
 
     //列表中移除图片
-    $scope.remove_image_entity=function(index){
-        $scope.entity.goodsDesc.itemImages.splice(index,1);
-    }
-});	
+    $scope.remove_image_entity = function (index) {
+        $scope.entity.goodsDesc.itemImages.splice(index, 1);
+    };
+});
