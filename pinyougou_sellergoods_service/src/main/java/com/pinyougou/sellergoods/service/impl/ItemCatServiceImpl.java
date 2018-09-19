@@ -13,6 +13,7 @@ import com.pinyougou.pojo.TbItemCatExample.Criteria;
 import com.pinyougou.sellergoods.service.ItemCatService;
 
 import entity.PageResult;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 服务实现层
@@ -20,6 +21,7 @@ import entity.PageResult;
  * @author Administrator
  */
 @Service
+@Transactional
 public class ItemCatServiceImpl implements ItemCatService {
 
     @Autowired
@@ -77,7 +79,9 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     public void delete(Long[] ids) {
         for (Long id : ids) {
+          if(findByParentId(id)==null){
             itemCatMapper.deleteByPrimaryKey(id);
+          }
         }
     }
 
