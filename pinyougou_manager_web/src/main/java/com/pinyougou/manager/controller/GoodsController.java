@@ -64,7 +64,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbGoods goods){
+	public Result update(@RequestBody Goods goods){
 		try {
 			goodsService.update(goods);
 			return new Result(true, "修改成功");
@@ -110,6 +110,22 @@ public class GoodsController {
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
 		return goodsService.findPage(goods, page, rows);		
+	}
+
+	/**
+	 * 更新状态
+	 * @param ids
+	 * @param status
+	 */
+	@RequestMapping("/updateStatus")
+	public Result updateStatus(Long[] ids, String status){
+		try {
+			goodsService.updateStatus(ids, status);
+			return new Result(true, "审核成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "审核失败");
+		}
 	}
 	
 }

@@ -57,9 +57,9 @@
                                 <div class="has-feedback">
                                   状态：<select ng-model="searchEntity.auditStatus">
                                          	<option value="">全部</option>      
-                                         	<option value="0">未申请</option>    
-                                         	<option value="1">申请中</option>    
-                                         	<option value="2">审核通过</option>    
+                                         	<option value="0">未审核</option>
+                                         	<option value="1">已审核</option>
+                                         	<option value="2">审核未通过</option>
                                          	<option value="3">已驳回</option>                                     
                                         </select>
 							                  商品名称：<input ng-model="searchEntity.goodsName">
@@ -98,8 +98,8 @@
 		                                  {{status[entity.auditStatus]}}
 
 		                                  </td>		                                  
-		                                  <td class="text-center">                                          
-		                                 	  <button type="button" class="btn bg-olive btn-xs" ng-click="findOne()">修改</button>
+		                                  <td class="text-center">
+											  <a href="goods_edit.html#?id={{entity.id}}" class="btn bg-olive btn-xs">修改</a>
 		                                  </td>
 			                          </tr>
 			                      </tbody>

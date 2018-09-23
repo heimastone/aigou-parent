@@ -1,5 +1,5 @@
 //控制层
-app.controller('goodsController', function ($scope, $controller, $loaction, uploadService, itemCatService, typeTemplateService, goodsService) {
+app.controller('goodsController', function ($scope, $controller, $location, uploadService, itemCatService,  goodsService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -25,21 +25,54 @@ app.controller('goodsController', function ($scope, $controller, $loaction, uplo
     //查询实体
     $scope.findOne = function () {
 
-        var id = $loaction.search()['id'];
+        var id = $location.search()['id'];
         if (id == null) {
             return;
         }
         goodsService.findOne(id).success(
             function (response) {
                 $scope.entity = response;
-                editor.html($scope.entity.goodsDesc.introduction);
-            }
+                editor.html($scope.entity.goodsDesc.introduction);//商品介紹
+                $scope.entity.goodsDesc.itemImages = JSON.parse($scope.entity.goodsDesc.itemImages)//图片转换
+                //扩展属性
+                $scope.entity.goodsDesc.customAttributeItems = JSON.parse($scope.entity.goodsDesc.customAttributeItems);
+               //规格
+                $scope.entity.goodsDesc.specificationItems=JSON.parse($scope.entity.goodsDesc.specificationItems);
+                //SKU列表
+                //SKU 列表规格列转换
+                for( var i=0;i<$scope.entity.itemList.length;i++ ){
+                    $scope.entity.itemList[i].spec=JSON.parse( $scope.entity.itemList[i].spec);}
+                }
         );
     };
 
     //保存
-    $scope.add = function () {
+    $scope.save=function(){
         /*获取富文本内容*/
+        $scope.entity.goodsDesc.introduction = editor.html();
+        var serviceObject;//服务层对象
+        if($scope.entity.goods.id!=null){//如果有ID
+            serviceObject=goodsService.update( $scope.entity ); //修改
+        }else{
+            serviceObject=goodsService.add( $scope.entity  );//增加
+        }
+        serviceObject.success(
+            function(response){
+                if(response.success){
+                    alert("保存成功");
+                    $scope.entity = {};//清空
+                    editor.html();//清空富文本内容
+
+                }else{
+                    alert(response.message);
+                }
+            }
+        );
+    }
+
+    //保存
+  /*  $scope.add = function () {
+        /!*获取富文本内容*!/
         $scope.entity.goodsDesc.introduction = editor.html();
         goodsService.add($scope.entity).success(
             function (response) {
@@ -54,7 +87,7 @@ app.controller('goodsController', function ($scope, $controller, $loaction, uplo
                 }
             }
         );
-    };
+    };*/
 
 
     //批量删除
@@ -144,8 +177,10 @@ app.controller('goodsController', function ($scope, $controller, $loaction, uplo
             $scope.template = response;
             $scope.template.brandIds = JSON.parse($scope.template.brandIds);//将json字符串转换成集合
             //扩展属性
-            $scope.entity.goodsDesc.customAttributeItems = JSON.parse($scope.template.customAttributeItems);
-        })
+            if ($location.search()['id'] == null) {
+                $scope.entity.goodsDesc.customAttributeItems = JSON.parse($scope.template.customAttributeItems);
+            }
+        });
 
         typeTemplateService.findSpecList(newValue).success(function (response) {
             $scope.specList = response;
@@ -210,7 +245,23 @@ app.controller('goodsController', function ($scope, $controller, $loaction, uplo
                     $scope.itemCatList[response[i].id] = response[i].name;
                 }
             });
+    };
+
+    //根据规格名称和选项名称返回是否被勾选
+    $scope.checkAttributeValue=function(specName,optionName){
+        var items= $scope.entity.goodsDesc.specificationItems;
+        var object= $scope.searchObjectByKey(items,'attributeName',specName);
+        if(object==null){
+            return false;
+        }else{
+            if(object.attributeValue.indexOf(optionName)>=0){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
+
 
 
 });
