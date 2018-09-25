@@ -1,5 +1,5 @@
 //控制层
-app.controller('itemCatController', function ($scope, $controller, itemCatService,typeTemplateController) {
+app.controller('itemCatController', function ($scope, $controller, itemCatService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -37,7 +37,7 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
         if ($scope.entity.id != null) {//如果有ID
             serviceObject = itemCatService.update($scope.entity); //修改
         } else {
-            $scope.entity.parentId=$scope.parentId;//賦值
+            $scope.entity.parentId=$scope.parentId;//賦值上级ID
             serviceObject = itemCatService.add($scope.entity);//增加
         }
         serviceObject.success(
@@ -81,9 +81,9 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
     /*
     * 根據父Id查询下类列表
     * */
-    $scope.parentId=0;
+   $scope.parentId=0;
     $scope.findByParentId = function (parentId) {
-        $scope.parentId=parentId;//记住上级 ID
+       $scope.parentId=parentId;//记住上级 ID
         itemCatService.findByParentId(parentId).success(function (response) {
             $scope.list = response;
 
@@ -107,6 +107,8 @@ app.controller('itemCatController', function ($scope, $controller, itemCatServic
         if ($scope.grade == 3) {
             $scope.entity_2 = p_entity;
         }
+
+
         $scope.findByParentId(p_entity.id);
 
     };
